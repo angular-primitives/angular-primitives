@@ -1,27 +1,21 @@
-# AngularPrimitives
+<h1 align="center">Angular Primitives - Growing organically as a collaborative community</h1>
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.0.0.
+<p align="center">
+  <img width="100%" src="https://github.com/angular/angular/blob/main/aio/src/assets/images/logos/angular/angular.png?raw=true" width="120px" height="120px">
+  <img width="100%" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Plus_symbol.svg/500px-Plus_symbol.svg.png" width="100px" height="100px">
+  <img width="100%" src="https://www.svgrepo.com/download/139/traffic-light.svg" width="95px" height="120px">
+</p>
 
-## Development server
+# Angular Primitives
+This project's main goal is to simplify the life of the angular developer, being democratically maintained and developed by the community's own participation.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Philosophy
 
-## Code scaffolding
+Provide intuitive solutions to the Angular community in order to improve the development ecosystem. Any and all primitive functionality created must be approved by the community as well as be made available individually via NPM.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Primitives
 
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+<!-- INSERT-PRIMITIVES-TABLE:START -->
+| Name                                                                                                                                            | Primitives                                                                                                                       |State|Size|NPM|
+|-------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|------|----|----|
+| [intersection-observer](https://github.com/Fractal-System/angular-primitives/tree/main/projects/src/intersection-observer#readme) | [fromIntersectionSignal](https://github.com/Fractal-System/angular-primitives/tree/main/projects/intersection-observer/index.ts) |in progress
