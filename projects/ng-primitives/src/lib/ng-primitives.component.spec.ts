@@ -8,7 +8,7 @@ describe('NgPrimitivesComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [NgPrimitivesComponent]
+      declarations: [NgPrimitivesComponent],
     });
     fixture = TestBed.createComponent(NgPrimitivesComponent);
     component = fixture.componentInstance;
