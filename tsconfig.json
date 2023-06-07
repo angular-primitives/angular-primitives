@@ -12,7 +12,9 @@
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
     "paths": {
-      "ng-primitives": ["dist/ng-primitives"]
+      "intersection-observer": [
+        "dist/intersection-observer"
+      ],
     },
     "declaration": false,
     "downlevelIteration": true,
