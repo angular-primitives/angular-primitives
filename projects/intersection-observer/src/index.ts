@@ -1,6 +1,7 @@
 import { signal, Signal } from '@angular/core';
 
-export const fromVisibilityObserver = (element: HTMLElement, config: IntersectionObserverInit): Signal<boolean> => {
+export const fromVisibilityObserver = (element: HTMLElement, config: IntersectionObserverInit = {}): Signal<boolean> => {
+  console.log(element)
   const signals: WeakMap<Element, Signal<boolean>> = new WeakMap<Element, Signal<boolean>>();
   const initialSignal = signal(false);
 

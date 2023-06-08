@@ -1,7 +1,21 @@
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { bootstrapApplication } from '@angular/platform-browser';
+import { provideRouter } from '@angular/router';
+import { AppComponent } from './app/app.component';
+import { HomeComponent } from './app/pages/home/home.component';
+import { IntersectionObserverComponent } from './app/pages/intersection-observer/intersection-observer.component';
 
-import { AppModule } from './app/app.module';
-
-platformBrowserDynamic()
-  .bootstrapModule(AppModule)
-  .catch((err) => console.error(err));
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideRouter([
+      {
+        path: '',
+        loadComponent: () => HomeComponent,
+      },
+      {
+        path: 'intersection-observer',
+        loadComponent: () => IntersectionObserverComponent,
+      },
+      { path: '**', redirectTo: '', pathMatch: 'full' },
+    ]),
+  ],
+}).catch((err) => console.error(err));

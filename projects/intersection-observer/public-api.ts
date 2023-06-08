@@ -2,4 +2,4 @@
  * Public API Surface of intersection-observer
  */
 
-export { fromVisibilityObserver } from './index';
+export { fromVisibilityObserver } from './src';
