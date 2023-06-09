@@ -16,7 +16,14 @@ import { RouterLink } from '@angular/router';
       </nav>
     </aside>
   `,
-  styles: [`:host aside { min-width: 240px; padding: 0 24px }`],
+  styles: [
+    `
+      :host aside {
+        min-width: 240px;
+        padding: 0 24px;
+      }
+    `,
+  ],
   imports: [RouterLink],
 })
 export class SideMenuComponent {}

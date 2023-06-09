@@ -8,7 +8,7 @@ import {
   Signal,
   ViewChild,
 } from '@angular/core';
-import { fromVisibilityObserver } from '../../../../projects/intersection-observer/public-api';
+import { fromVisibilityObserver } from 'dist/@angular-primitives/intersection-observer';
 import { NgIf } from '@angular/common';
 
 @Component({

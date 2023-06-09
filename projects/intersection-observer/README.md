@@ -26,9 +26,49 @@ yarn add @angular-primitives/intersection-observer
 ```
 
 
-## `fromVisibilityObserver`
-
+## `fromVisibilityObserver`([example](https://github.com/Fractal-System/angular-primitives/tree/main/projects/intersection-observer/index.ts))
+- Screen Observer
 ```ts
 import { fromVisibilityObserver } from "@angular-primitives/intersection-observer";
 
+@Component(
+  ...
+    template: `
+        <div #someRef></div>
+        <span>visible: {{isSomeRefVisible()}}</span>
+    `
+)
+export class SomeComponent implements AfterViewInit {
+  @ViewChild('someRef') someRef!: ElementRef;
+  isSomeRefVisible!: Signal<boolean>;
+
+  ngAfterViewInit() {
+    this.isSomeRefVisible = fromVisibilityObserver(this.someRef?.nativeElement);
+  }
+}
+```
+
+- Contextual Observer
+```ts
+import { fromVisibilityObserver } from "@angular-primitives/intersection-observer";
+
+@Component(
+  ...
+    template: `
+        <div #contextualRef>
+            <div #someRef></div>
+        </div>
+        <span>visible: {{isSomeRefVisible()}}</span>
+    `
+)
+export class SomeComponent implements AfterViewInit {
+  @ViewChild('contextualRef') contextualRef!: ElementRef;
+  @ViewChild('someRef') someRef!: ElementRef;
+  isSomeRefVisible!: Signal<boolean>;
+
+  ngAfterViewInit() {
+    const config =  { root: this.contextualRef.nativeElement, rootMargin: '0px', threshold: 0 } 
+    this.isSomeRefVisible = fromVisibilityObserver(this.someRef?.nativeElement, config);
+  }
+}
 ```
