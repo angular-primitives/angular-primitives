@@ -1,34 +1,74 @@
 <p align="center">
-  <img width="100%" src="https://github.com/angular/angular/blob/main/aio/src/assets/images/logos/angular/angular.png?raw=true" width="120px" height="120px">
-  <img width="100%" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Plus_symbol.svg/500px-Plus_symbol.svg.png" width="100px" height="100px">
-  <img width="100%" src="https://www.svgrepo.com/download/139/traffic-light.svg" width="95px" height="120px">
+  <img src="https://github.com/angular/angular/blob/main/aio/src/assets/images/logos/angular/angular.png?raw=true" width="120px" height="120px">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Plus_symbol.svg/500px-Plus_symbol.svg.png" width="100px" height="100px">
+  <img src="https://www.svgrepo.com/download/139/traffic-light.svg" width="95px" height="120px">
 </p>
 
 
-# @ng-primitives/intersection-observer
+# @angular-primitives/intersection-observer
 
 
 A range of IntersectionObserver API utilities great for different types of use cases:
 
 
 
-- [`createIntersectionObserver`](#createIntersectionObserver) - A reactive observer primitive.
+- [`fromVisibilityObserver`](#fromVisibilityObserver) - A reactive visibility observer primitive.
 
 
 ## Installation
 
 ```bash
-npm install @ng-primitives/intersection-observer
+npm install @angular-primitives/intersection-observer
 # or
-pnpm add @ng-primitives/intersection-observer
+pnpm add @angular-primitives/intersection-observer
 # or
-yarn add @ng-primitives/intersection-observer
+yarn add @angular-primitives/intersection-observer
 ```
 
 
-## `fromVisibilityObserver`
-
+## `fromVisibilityObserver`([example](https://github.com/Fractal-System/angular-primitives/tree/main/projects/intersection-observer/index.ts))
+- Screen Observer
 ```ts
-import { fromVisibilityObserver } from "@ng-primitives/intersection-observer";
+import { fromVisibilityObserver } from "@angular-primitives/intersection-observer";
 
+@Component(
+  ...
+    template: `
+        <div #someRef></div>
+        <span>visible: {{isSomeRefVisible()}}</span>
+    `
+)
+export class SomeComponent implements AfterViewInit {
+  @ViewChild('someRef') someRef!: ElementRef;
+  isSomeRefVisible!: Signal<boolean>;
+
+  ngAfterViewInit() {
+    this.isSomeRefVisible = fromVisibilityObserver(this.someRef?.nativeElement);
+  }
+}
+```
+
+- Contextual Observer
+```ts
+import { fromVisibilityObserver } from "@angular-primitives/intersection-observer";
+
+@Component(
+  ...
+    template: `
+        <div #contextualRef>
+            <div #someRef></div>
+        </div>
+        <span>visible: {{isSomeRefVisible()}}</span>
+    `
+)
+export class SomeComponent implements AfterViewInit {
+  @ViewChild('contextualRef') contextualRef!: ElementRef;
+  @ViewChild('someRef') someRef!: ElementRef;
+  isSomeRefVisible!: Signal<boolean>;
+
+  ngAfterViewInit() {
+    const config =  { root: this.contextualRef.nativeElement, rootMargin: '0px', threshold: 0 } 
+    this.isSomeRefVisible = fromVisibilityObserver(this.someRef?.nativeElement, config);
+  }
+}
 ```
