@@ -1,6 +1,5 @@
 import {ChangeDetectionStrategy, Component, signal, Signal, WritableSignal} from '@angular/core';
-import {fromTimeDifference} from "../../../../projects/date/src";
-import {DatePipe} from "@angular/common";
+import {DateIntervalEnum, fromDiffBetweenDates, fromFormattedDiffBetweenDates} from "../../../../projects/date/src";
 
 @Component({
   standalone: true,
@@ -11,35 +10,40 @@ import {DatePipe} from "@angular/common";
 
             <div class="header">
               <h5>Difference between Dates</h5>
-              <!-- From -->
-              <label for="date">Date
-                <input type="date" id="date" name="date" (change)="changeDateFrom($event)">
+              <label for="date">Start Date:
+                <input type="date" [defaultValue]="from()" (change)="changeDateFrom($event)">
               </label>
-              <!-- To -->
-              <label for="date">Date
-                <input type="date" id="date" name="date" (change)="changeDateTo($event)">
+              <label for="date">End Date:
+                <input type="date" [defaultValue]="to()" (change)="changeDateTo($event)">
               </label>
-              {{diff()}}
+              <span><b>Format date:</b> {{diff()}}</span><br>
+              <span><b>Formatted:</b> {{diffFormatted()}}</span>
             </div>
+            <br>
 
-
+            <div class="header">
+              <h5>Your age</h5>
+              <label for="date">Date Birth:
+                <input type="date" [defaultValue]="from()" (change)="changeDateBirth($event)">
+              </label>
+              <span><b>Your exact age:</b> {{yourAge()}}</span>
+            </div>
         </article>
     `,
-  imports: [DatePipe]
 })
 export class DateComponent {
 
-  from: WritableSignal<string> = signal('2023/01/01');
-  to: WritableSignal<string>  = signal('2023/01/31');
-  diff: Signal<Date | string> = fromTimeDifference(this.from, this.to, 'dd');
+  from: WritableSignal<string> = signal('2023/09/01');
+  to: WritableSignal<string>  = signal('2023/09/31');
+  diff: Signal<Date> = fromDiffBetweenDates(this.from, this.to);
+  diffFormatted: Signal<string> = fromFormattedDiffBetweenDates(this.from, this.to, [DateIntervalEnum.hour]);
 
-  changeDateFrom(e: any): void {
-    console.log(e.target.value);
-    this.from.set(e.target.value);
-  }
+  today = new Date().toString()
+  dateBirth: WritableSignal<string> = signal(this.today);
+  yourAge: Signal<string> = fromFormattedDiffBetweenDates(this.dateBirth, signal(this.today));
 
-  changeDateTo(e: any): void {
-    console.log(e.target.value);
-    this.to.set(e.target.value);
-  }
+  changeDateFrom = (e: any): void => this.from.set(e.target.value);
+  changeDateTo= (e: any): void => this.to.set(e.target.value);
+  changeDateBirth = (e: any): void => this.dateBirth.set(e.target.value);
+
 }
