@@ -12,6 +12,9 @@
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
     "paths": {
+      "date": [
+        "dist/date"
+      ],
       "intersection-observer": [
         "dist/intersection-observer"
       ],

@@ -1,7 +1,15 @@
 import { signal, Signal } from '@angular/core';
 
+
+/**
+ * Reactive visibility observer, check if element is visible on intersection.
+ *
+ * @param element: HTMLElement target to observer
+ * @param config: IntersectionObserverInit interface from WebAPI to contextual use cases
+ *
+ * @returns Boolean Signal
+ */
 export const fromVisibilityObserver = (element: HTMLElement, config: IntersectionObserverInit = {}): Signal<boolean> => {
-  console.log(element)
   const signals: WeakMap<Element, Signal<boolean>> = new WeakMap<Element, Signal<boolean>>();
   const initialSignal = signal(false);
 

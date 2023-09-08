@@ -9,7 +9,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { fromVisibilityObserver } from 'dist/@angular-primitives/intersection-observer';
-import { NgIf } from '@angular/common';
+import {DatePipe, NgIf} from '@angular/common';
 
 @Component({
   standalone: true,
@@ -91,7 +91,7 @@ import { NgIf } from '@angular/common';
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgIf],
+  imports: [NgIf, DatePipe],
 })
 export class IntersectionObserverComponent implements AfterViewInit {
   @ViewChild('redCicle') redCicle!: ElementRef;
