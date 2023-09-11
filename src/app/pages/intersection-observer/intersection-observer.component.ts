@@ -4,12 +4,12 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
-  inject,
+  inject, signal,
   Signal,
-  ViewChild,
+  ViewChild, ViewChildren, WritableSignal,
 } from '@angular/core';
-import { fromVisibilityObserver } from 'dist/@angular-primitives/intersection-observer';
-import {DatePipe, NgIf} from '@angular/common';
+import { fromVisibilityObserver, fromViewportObserver } from 'dist/@angular-primitives/intersection-observer';
+import {DatePipe, NgFor, NgIf} from '@angular/common';
 
 @Component({
   standalone: true,
@@ -43,6 +43,22 @@ import {DatePipe, NgIf} from '@angular/common';
       <div class="screen-container">
         <div #redCicle class="circle red"></div>
         <div #blueCircle class="circle blue"></div>
+      </div>
+
+      <br><br>
+      <div>
+        <h5>Viewport Observer(virtual scroller)</h5><br>
+
+        <div class="contextual-container">
+          <div #itemsViewport *ngFor="let item of arrayList; let index = index">
+            <div class="item-viewport" *ngIf="signalViewport()[index]">
+              {{index}}
+            </div>
+            <div class="item-viewport" *ngIf="!signalViewport()[index]">
+              placeholder
+            </div>
+          </div>
+        </div>
       </div>
     </article>
   `,
@@ -87,11 +103,16 @@ import {DatePipe, NgIf} from '@angular/common';
             right: -150px;
           }
         }
+
+        .item-viewport {
+          height: 100px;
+          width: 100px;
+        }
       }
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgIf, DatePipe],
+  imports: [NgIf, NgFor, DatePipe],
 })
 export class IntersectionObserverComponent implements AfterViewInit {
   @ViewChild('redCicle') redCicle!: ElementRef;
@@ -99,6 +120,7 @@ export class IntersectionObserverComponent implements AfterViewInit {
   @ViewChild('redCicleContextual') redCicleContextual!: ElementRef;
   @ViewChild('blueCircleContextual') blueCircleContextual!: ElementRef;
   @ViewChild('contextualContainer') contextualContainer!: ElementRef;
+  @ViewChildren('itemsViewport') itemsViewport!: any;
 
   private _cd: ChangeDetectorRef = inject(ChangeDetectorRef);
 
@@ -106,6 +128,9 @@ export class IntersectionObserverComponent implements AfterViewInit {
   isBlueCircleVisible!: Signal<boolean>;
   isRedCicleContextualVisible!: Signal<boolean>;
   isBlueCircleContextualVisible!: Signal<boolean>;
+
+  arrayList: number[] = [...Array(100).keys()];
+  signalViewport: WritableSignal<{ [n: number]: boolean }> = signal({});
 
   ngAfterViewInit() {
     this.isRedCicleVisible = fromVisibilityObserver(
@@ -123,6 +148,7 @@ export class IntersectionObserverComponent implements AfterViewInit {
       this.blueCircleContextual?.nativeElement,
       config
     );
+    this.signalViewport = fromViewportObserver(this.itemsViewport._results)
     this._cd.markForCheck();
   }
 }

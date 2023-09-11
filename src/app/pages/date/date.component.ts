@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, signal, Signal, WritableSignal} from '@angular/core';
-import {DateIntervalEnum, fromDiffBetweenDates, fromFormattedDiffBetweenDates} from "../../../../projects/date/src";
+import {DateIntervalEnum, fromDiffBetweenDates, fromFormattedDiffBetweenDates} from "dist/@angular-primitives/date";
 
 @Component({
   standalone: true,

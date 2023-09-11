@@ -12,7 +12,8 @@ A several dates utilities for different types of use cases:
 
 
 
-- [`fromVisibilityObserver`](#fromVisibilityObserver) - A reactive visibility observer primitive.
+- [`fromDiffBetweenDates`](#fromDiffBetweenDates) - A reactive diff between dates.
+- [`fromFormattedDiffBetweenDates`](#fromFormattedDiffBetweenDates) - A reactive formatted diff between dates.
 
 
 ## Installation
@@ -26,49 +27,60 @@ yarn add @angular-primitives/date
 ```
 
 
-## `fromVisibilityObserver`([example](https://github.com/Fractal-System/angular-primitives/tree/main/projects/intersection-observer/index.ts))
-- Screen Observer
+## `fromDiffBetweenDates`([example](https://github.com/Fractal-System/angular-primitives/tree/main/projects/date/src/index.ts))
+- Reactive diff between dates
 ```ts
-import { fromVisibilityObserver } from "@angular-primitives/date";
+import { fromDiffBetweenDates } from "@angular-primitives/date";
 
 @Component(
   ...
     template: `
-        <div #someRef></div>
-        <span>visible: {{isSomeRefVisible()}}</span>
+        <input type="date" (change)="from.set($event.target.value)">
+        <input type="date" (change)="to.set($event.target.value)">
+        {{ diff() }}
     `
 )
-export class SomeComponent implements AfterViewInit {
-  @ViewChild('someRef') someRef!: ElementRef;
-  isSomeRefVisible!: Signal<boolean>;
-
-  ngAfterViewInit() {
-    this.isSomeRefVisible = fromVisibilityObserver(this.someRef?.nativeElement);
-  }
+export class SomeComponent {
+  from: WritableSignal<string> = signal('2023/01/01');
+  to: WritableSignal<string>  = signal('2023/01/31');
+  diff: Signal<Date> = fromDiffBetweenDates(this.from, this.to);
 }
 ```
 
-- Contextual Observer
+## `fromFormattedDiffBetweenDates`([example](https://github.com/Fractal-System/angular-primitives/tree/main/projects/date/src/index.ts))
+- Formatted reactive diff between dates
 ```ts
-import { fromVisibilityObserver } from "@angular-primitives/date";
+import { fromDiffBetweenDates } from "@angular-primitives/date";
 
 @Component(
   ...
     template: `
-        <div #contextualRef>
-            <div #someRef></div>
-        </div>
-        <span>visible: {{isSomeRefVisible()}}</span>
+        <input type="date" (change)="from.set($event.target.value)">
+        <input type="date" (change)="from.set($event.target.value)">
+        {{ diff() }}
     `
 )
-export class SomeComponent implements AfterViewInit {
-  @ViewChild('contextualRef') contextualRef!: ElementRef;
-  @ViewChild('someRef') someRef!: ElementRef;
-  isSomeRefVisible!: Signal<boolean>;
+export class SomeComponent {
+  from: WritableSignal<string> = signal('2023/01/01');
+  to: WritableSignal<string>  = signal('2023/01/31');
+  diff: Signal<Date> = fromDiffBetweenDates(this.from, this.to);
+}
+```
 
-  ngAfterViewInit() {
-    const config =  { root: this.contextualRef.nativeElement, rootMargin: '0px', threshold: 0 } 
-    this.isSomeRefVisible = fromVisibilityObserver(this.someRef?.nativeElement, config);
-  }
+- Formatted reactive diff between dates, example what's is my age
+```ts
+import { fromDiffBetweenDates } from "@angular-primitives/date";
+
+@Component(
+  ...
+    template: `
+        <input type="date" (change)="birthDate.set($event.target.value)">
+        {{ diff() }}
+    `
+)
+export class SomeComponent {
+  from: WritableSignal<string> = signal('2023/01/01');
+  to: WritableSignal<string>  = signal('2023/01/31');
+  birthDate: Signal<Date> = fromDiffBetweenDates(this.from, signal(new Date()), [DateIntervalEnum.year]);
 }
 ```
