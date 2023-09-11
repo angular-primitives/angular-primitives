@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build-date": "ng build date",
     "build-intersection-observer": "ng build intersection-observer",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",

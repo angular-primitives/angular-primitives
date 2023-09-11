@@ -12,21 +12,22 @@ A range of IntersectionObserver API utilities great for different types of use c
 
 
 
-- [`fromVisibilityObserver`](#fromVisibilityObserver) - A reactive visibility observer primitive.
+- [`fromVisibilityObserver`](#fromVisibilityObserver) - A reactive primitive visibility observer .
+- [`fromViewportObserver`](#fromViewportObserver) - A reactive primitive viewport observer.
 
 
 ## Installation
 
 ```bash
-npm install @angular-primitives/intersection-observer
+npm install @angular-primitives/date
 # or
-pnpm add @angular-primitives/intersection-observer
+pnpm add @angular-primitives/date
 # or
-yarn add @angular-primitives/intersection-observer
+yarn add @angular-primitives/date
 ```
 
 
-## `fromVisibilityObserver`([example](https://github.com/Fractal-System/angular-primitives/tree/main/projects/intersection-observer/index.ts))
+## `fromVisibilityObserver`([example](https://github.com/angular-primitives/angular-primitives/tree/main/projects/intersection-observer/src/index.ts))
 - Screen Observer
 ```ts
 import { fromVisibilityObserver } from "@angular-primitives/intersection-observer";
@@ -71,4 +72,7 @@ export class SomeComponent implements AfterViewInit {
     this.isSomeRefVisible = fromVisibilityObserver(this.someRef?.nativeElement, config);
   }
 }
+
+
+
 ```

@@ -9,6 +9,7 @@ import { RouterLink } from '@angular/router';
       <nav>
         <ul>
           <li><a routerLink="home">Home</a></li>
+          <li><a routerLink="date">Date</a></li>
           <li>
             <a routerLink="intersection-observer">Intersection Observer</a>
           </li>
