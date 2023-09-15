@@ -9,7 +9,8 @@ import {
   ViewChild, ViewChildren, WritableSignal,
 } from '@angular/core';
 import { fromVisibilityObserver, fromViewportObserver } from 'dist/@angular-primitives/intersection-observer';
-import {DatePipe, NgFor, NgIf} from '@angular/common';
+import { NgFor, NgIf} from '@angular/common';
+import {ViewportObserverDirective} from "./virtual-observer.directive";
 
 @Component({
   standalone: true,
@@ -47,7 +48,7 @@ import {DatePipe, NgFor, NgIf} from '@angular/common';
 
       <br><br>
       <div>
-        <h5>Viewport Observer(virtual scroller)</h5><br>
+        <h5>Viewport Observer using ViewChildren(virtual scroller)</h5><br>
 
         <div class="contextual-container">
           <div #itemsViewport *ngFor="let item of arrayList; let index = index">
@@ -55,6 +56,20 @@ import {DatePipe, NgFor, NgIf} from '@angular/common';
               {{index}}
             </div>
             <div class="item-viewport" *ngIf="!signalViewport()[index]">
+              placeholder
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <h5>Viewport Observer using ElementRef(virtual scroller)</h5><br>
+
+        <div viewportObserver (viewportSignal)="signalViewportDirective = $event" class="contextual-container">
+          <div *ngFor="let item of arrayList; let index = index">
+            <div class="item-viewport" *ngIf="signalViewportDirective()[index]">
+              {{index}}
+            </div>
+            <div class="item-viewport" *ngIf="!signalViewportDirective()[index]">
               placeholder
             </div>
           </div>
@@ -112,7 +127,7 @@ import {DatePipe, NgFor, NgIf} from '@angular/common';
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgIf, NgFor, DatePipe],
+  imports: [NgIf, NgFor, ViewportObserverDirective],
 })
 export class IntersectionObserverComponent implements AfterViewInit {
   @ViewChild('redCicle') redCicle!: ElementRef;
@@ -131,6 +146,7 @@ export class IntersectionObserverComponent implements AfterViewInit {
 
   arrayList: number[] = [...Array(100).keys()];
   signalViewport: WritableSignal<{ [n: number]: boolean }> = signal({});
+  signalViewportDirective: WritableSignal<{ [n: number]: boolean }> = signal({});
 
   ngAfterViewInit() {
     this.isRedCicleVisible = fromVisibilityObserver(
@@ -152,3 +168,5 @@ export class IntersectionObserverComponent implements AfterViewInit {
     this._cd.markForCheck();
   }
 }
+
+
