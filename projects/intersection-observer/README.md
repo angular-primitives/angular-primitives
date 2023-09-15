@@ -76,3 +76,50 @@ export class SomeComponent implements AfterViewInit {
 
 
 ```
+
+## `fromViewportObserver`([example](https://github.com/angular-primitives/angular-primitives/tree/main/projects/intersection-observer/src/index.ts))
+- Viewport Observer using ViewChildren(virtual scroller)
+```ts
+import { fromViewportObserver } from "@angular-primitives/intersection-observer";
+
+@Component(
+  ...
+    template: `
+        <div #itemsViewport *ngFor="let item of arrayList; let index = index">
+            <div class="item-viewport" *ngIf="signalViewport()[index]">
+              {{index}}
+            </div>
+        </div>
+    `
+)
+export class SomeComponent implements AfterViewInit {
+  @ViewChildren('itemsViewport') itemsViewport!: any;
+  signalViewport: WritableSignal<{ [n: number]: boolean }> = signal({});
+
+  ngAfterViewInit() {
+    this.signalViewport = fromViewportObserver(this.itemsViewport._results)
+  }
+}
+```
+
+- Viewport Observer using ElementRef(virtual scroller)
+```ts
+import { fromViewportObserver } from "@angular-primitives/intersection-observer";
+
+@Component(
+  ...
+    template: `
+        <div viewportObserver (viewportSignal)="signalViewportDirective = $event" class="contextual-container">
+          <div *ngFor="let item of arrayList; let index = index">
+            <div class="item-viewport" *ngIf="signalViewportDirective()[index]">
+              {{index}}
+            </div>
+          </div>
+        </div>
+    `
+)
+export class SomeComponent {
+  signalViewportDirective: WritableSignal<{ [n: number]: boolean }> = signal({});
+}
+```
+directive used [viewportObserver](https://github.com/angular-primitives/angular-primitives/tree/main/src/app/pages/intersection-observer/virtual-observer.directive.ts)
