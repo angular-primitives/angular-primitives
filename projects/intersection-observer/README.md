@@ -119,6 +119,7 @@ import { fromViewportObserver } from "@angular-primitives/intersection-observer"
     `
 )
 export class SomeComponent {
+  arrayList: number[] = [...Array(100).keys()];
   signalViewportDirective: WritableSignal<{ [n: number]: boolean }> = signal({});
 }
 ```

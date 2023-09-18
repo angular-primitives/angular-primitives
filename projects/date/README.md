@@ -50,7 +50,7 @@ export class SomeComponent {
 ## `fromFormattedDiffBetweenDates`([example](https://github.com/Fractal-System/angular-primitives/tree/main/projects/date/src/index.ts))
 - Formatted reactive diff between dates
 ```ts
-import { fromDiffBetweenDates } from "@angular-primitives/date";
+import { fromFormattedDiffBetweenDates } from "@angular-primitives/date";
 
 @Component(
   ...
@@ -63,24 +63,23 @@ import { fromDiffBetweenDates } from "@angular-primitives/date";
 export class SomeComponent {
   from: WritableSignal<string> = signal('2023/01/01');
   to: WritableSignal<string>  = signal('2023/01/31');
-  diff: Signal<Date> = fromDiffBetweenDates(this.from, this.to);
+  diff: Signal<Date> = fromFormattedDiffBetweenDates(this.from, this.to);
 }
 ```
 
-- Formatted reactive diff between dates, example what's is my age
+- Formatted reactive diff between dates, example what is my age
 ```ts
-import { fromDiffBetweenDates } from "@angular-primitives/date";
+import { fromFormattedDiffBetweenDates, DateIntervalEnum } from "@angular-primitives/date";
 
 @Component(
   ...
     template: `
         <input type="date" (change)="birthDate.set($event.target.value)">
-        {{ diff() }}
+        {{ yourAge() }}
     `
 )
 export class SomeComponent {
-  from: WritableSignal<string> = signal('2023/01/01');
-  to: WritableSignal<string>  = signal('2023/01/31');
-  birthDate: Signal<Date> = fromDiffBetweenDates(this.from, signal(new Date()), [DateIntervalEnum.year]);
+  birthDate: WritableSignal<string> = signal('2023/01/01');
+  yourAge: Signal<Date> = fromFormattedDiffBetweenDates(this.birthDate, signal(new Date()), [DateIntervalEnum.year]);
 }
 ```
