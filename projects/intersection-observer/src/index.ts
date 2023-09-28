@@ -1,4 +1,6 @@
-import {ElementRef, signal, Signal, WritableSignal} from '@angular/core';
+import {effect, EffectRef, ElementRef, Injector, isSignal, signal, Signal, WritableSignal} from '@angular/core';
+import {Observable} from "rxjs";
+import {toSignal} from "@angular/core/rxjs-interop";
 
 
 /**
@@ -37,14 +39,16 @@ export const fromVisibilityObserver = (
 /**
  * Reactive viewport observer, check if some elements is visible on intersection.
  *
- * @param element: ElementRef[] & HTMLElement[] targets to observer
+ * @param ref: Reference Object with array of items to observe
  * @param config: IntersectionObserverInit interface from WebAPI to contextual use cases
+ * @param context: Object with items(signal or observable) and injector to use effect, use when your list can change
  *
  * @returns WritableSignal<{[n: number]: boolean}>
  */
 export const fromViewportObserver = (
-  elements: ElementRef[] & HTMLElement[] = [],
-  config: IntersectionObserverInit = {}
+  ref: { _results: ElementRef[] } & { children: HTMLElement[] },
+  config: IntersectionObserverInit = {},
+  context?: { items: Signal<any> | Observable<any>, injector: Injector }
 ): WritableSignal<{[n: number]: boolean}> => {
   const viewportSignal: WritableSignal<{[n: number]: boolean}> = signal({});
   const indexElement: WeakMap<Element, number> = new WeakMap<Element, number>();
@@ -53,19 +57,35 @@ export const fromViewportObserver = (
     entries.forEach((entry) => {
       const index = indexElement.get(entry.target) || 0;
       viewportSignal.update( (value) => {
-        value[index] = isIntersecting(entry);
+        value[index] = !index ? true: isIntersecting(entry);
         return value;
       })
     });
   }, config);
 
-  for (let i = 0; i < elements?.length; i ++) {
-    indexElement.set(elements[i]?.nativeElement || elements[i], i)
-    intersectionObserver.observe(elements[i]?.nativeElement || elements[i]);
+  const observeElements = () => {
+    for (let i = 0; i < getElementsFromRef(ref)?.length; i ++) {
+      indexElement.set(getElementsFromRef(ref)[i]?.nativeElement || getElementsFromRef(ref)[i], i)
+      intersectionObserver.observe(getElementsFromRef(ref)[i]?.nativeElement || getElementsFromRef(ref)[i]);
+    }
+  }
+
+  if (context) {
+    const signal = isSignal(context.items) ? context.items : toSignal(context.items as any, { injector: context.injector});
+    effect(() => {
+      signal();
+      setTimeout( () => observeElements());
+    }, { injector: context.injector });
+  } else {
+    observeElements();
   }
 
   return viewportSignal;
 };
+
+function getElementsFromRef(ref: any): ElementRef[] & HTMLElement[] {
+  return ref?._results || ref?.children;
+}
 
 function isIntersecting(entry: IntersectionObserverEntry): boolean {
   return entry.isIntersecting || entry.intersectionRatio > 0;

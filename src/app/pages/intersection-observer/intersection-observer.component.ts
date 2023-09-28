@@ -4,13 +4,22 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
-  inject, signal,
+  inject,
+  InjectionToken,
+  Injector,
+  signal,
   Signal,
-  ViewChild, ViewChildren, WritableSignal,
+  ViewChild,
+  ViewChildren,
+  WritableSignal,
 } from '@angular/core';
-import { fromVisibilityObserver, fromViewportObserver } from 'dist/@angular-primitives/intersection-observer';
-import { NgFor, NgIf} from '@angular/common';
-import {ViewportObserverDirective} from "./virtual-observer.directive";
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { ViewportObserverDirective } from './virtual-observer.directive';
+import {
+  fromViewportObserver,
+  fromVisibilityObserver,
+} from '../../../../projects/intersection-observer/public-api';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -20,11 +29,14 @@ import {ViewportObserverDirective} from "./virtual-observer.directive";
 
       <div class="header">
         <h5>Contextual example</h5>
-        <span *ngIf="isRedCicleContextualVisible">&nbsp;
-          (red: {{ isRedCicleContextualVisible() ? 'visible' : 'not visible' }}; &nbsp;
+        <span *ngIf="isRedCicleContextualVisible"
+          >&nbsp; (red:
+          {{ isRedCicleContextualVisible() ? 'visible' : 'not visible' }};
+          &nbsp;
         </span>
         <span *ngIf="isBlueCircleContextualVisible">
-          blue: {{ isBlueCircleContextualVisible() ? 'visible' : 'not visible' }})
+          blue:
+          {{ isBlueCircleContextualVisible() ? 'visible' : 'not visible' }})
         </span>
       </div>
       <div class="contextual-container" #contextualContainer>
@@ -34,8 +46,9 @@ import {ViewportObserverDirective} from "./virtual-observer.directive";
 
       <div class="header">
         <h5>Screen example</h5>
-        <span *ngIf="isRedCicleVisible">&nbsp;
-          (red: {{ isRedCicleVisible() ? 'visible' : 'not visible' }}; &nbsp;
+        <span *ngIf="isRedCicleVisible"
+          >&nbsp; (red: {{ isRedCicleVisible() ? 'visible' : 'not visible' }};
+          &nbsp;
         </span>
         <span *ngIf="isBlueCircleVisible">
           blue: {{ isBlueCircleVisible() ? 'visible' : 'not visible' }})
@@ -46,14 +59,21 @@ import {ViewportObserverDirective} from "./virtual-observer.directive";
         <div #blueCircle class="circle blue"></div>
       </div>
 
-      <br><br>
+      <br /><br />
       <div>
-        <h5>Viewport Observer using ViewChildren(virtual scroller)</h5><br>
+        <h5>
+          Viewport Observer using ViewChildren and Signal items(virtual
+          scroller)
+        </h5>
+        <br />
 
         <div class="contextual-container">
-          <div #itemsViewport *ngFor="let item of arrayList; let index = index">
+          <div
+            #itemsViewport
+            *ngFor="let item of arrayList(); let index = index"
+          >
             <div class="item-viewport" *ngIf="signalViewport()[index]">
-              {{index}}
+              {{ item }}
             </div>
             <div class="item-viewport" *ngIf="!signalViewport()[index]">
               placeholder
@@ -62,19 +82,74 @@ import {ViewportObserverDirective} from "./virtual-observer.directive";
         </div>
       </div>
       <div>
-        <h5>Viewport Observer using ElementRef(virtual scroller)</h5><br>
+        <h5>Viewport Observer using ElementRef and Signal items(virtual scroller)</h5>
+        <br />
 
-        <div viewportObserver (viewportSignal)="signalViewportDirective = $event" class="contextual-container">
-          <div *ngFor="let item of arrayList; let index = index">
+        <div
+          viewportObserver
+          [items]="arrayList"
+          (viewportSignal)="signalViewportDirective = $event"
+          class="contextual-container"
+        >
+          <div *ngFor="let item of arrayList(); let index = index">
             <div class="item-viewport" *ngIf="signalViewportDirective()[index]">
-              {{index}}
+              {{ item }}
             </div>
-            <div class="item-viewport" *ngIf="!signalViewportDirective()[index]">
+            <div
+              class="item-viewport"
+              *ngIf="!signalViewportDirective()[index]"
+            >
               placeholder
             </div>
           </div>
         </div>
       </div>
+      <button (click)="filterOdds()">Filter odd</button>
+      <div>
+        <h5>
+          Viewport Observer using ViewChildren and Observable items(virtual
+          scroller)
+        </h5>
+        <br />
+
+        <div class="contextual-container">
+          <div
+            #itemsViewport$
+            *ngFor="let item of arrayList$ | async; let index = index"
+          >
+            <div class="item-viewport" *ngIf="signalViewport$()[index]">
+              {{ item }}
+            </div>
+            <div class="item-viewport" *ngIf="!signalViewport$()[index]">
+              placeholder
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <h5>Viewport Observer using ElementRef and Observable items(virtual scroller)</h5>
+        <br />
+
+        <div
+          viewportObserver
+          [items]="arrayList$"
+          (viewportSignal)="signalViewportDirective$ = $event"
+          class="contextual-container"
+        >
+          <div *ngFor="let item of arrayList$ | async; let index = index">
+            <div class="item-viewport" *ngIf="signalViewportDirective$()[index]">
+              {{ item }}
+            </div>
+            <div
+              class="item-viewport"
+              *ngIf="!signalViewportDirective$()[index]"
+            >
+              placeholder
+            </div>
+          </div>
+        </div>
+      </div>
+      <button (click)="filterOdds$()">Filter odd</button>
     </article>
   `,
   styles: [
@@ -127,7 +202,7 @@ import {ViewportObserverDirective} from "./virtual-observer.directive";
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgIf, NgFor, ViewportObserverDirective],
+  imports: [NgIf, NgFor, AsyncPipe, ViewportObserverDirective],
 })
 export class IntersectionObserverComponent implements AfterViewInit {
   @ViewChild('redCicle') redCicle!: ElementRef;
@@ -136,17 +211,28 @@ export class IntersectionObserverComponent implements AfterViewInit {
   @ViewChild('blueCircleContextual') blueCircleContextual!: ElementRef;
   @ViewChild('contextualContainer') contextualContainer!: ElementRef;
   @ViewChildren('itemsViewport') itemsViewport!: any;
+  @ViewChildren('itemsViewport$') itemsViewport$!: any;
 
   private _cd: ChangeDetectorRef = inject(ChangeDetectorRef);
+  private injector = inject(Injector);
 
   isRedCicleVisible!: Signal<boolean>;
   isBlueCircleVisible!: Signal<boolean>;
   isRedCicleContextualVisible!: Signal<boolean>;
   isBlueCircleContextualVisible!: Signal<boolean>;
 
-  arrayList: number[] = [...Array(100).keys()];
+  arrayList: WritableSignal<number[]> = signal([...Array(100).keys()]);
+  arrayList$: BehaviorSubject<number[]> = new BehaviorSubject<number[]>([
+    ...Array(100).keys(),
+  ]);
   signalViewport: WritableSignal<{ [n: number]: boolean }> = signal({});
-  signalViewportDirective: WritableSignal<{ [n: number]: boolean }> = signal({});
+  signalViewport$: WritableSignal<{ [n: number]: boolean }> = signal({});
+  signalViewportDirective: WritableSignal<{ [n: number]: boolean }> = signal(
+    {}
+  );
+  signalViewportDirective$: WritableSignal<{ [n: number]: boolean }> = signal(
+    {}
+  );
 
   ngAfterViewInit() {
     this.isRedCicleVisible = fromVisibilityObserver(
@@ -155,7 +241,11 @@ export class IntersectionObserverComponent implements AfterViewInit {
     this.isBlueCircleVisible = fromVisibilityObserver(
       this.blueCircle?.nativeElement
     );
-    const config = { root: this.contextualContainer.nativeElement, rootMargin: '0px', threshold: 0 }
+    const config = {
+      root: this.contextualContainer.nativeElement,
+      rootMargin: '0px',
+      threshold: 0,
+    };
     this.isRedCicleContextualVisible = fromVisibilityObserver(
       this.redCicleContextual?.nativeElement,
       config
@@ -164,9 +254,24 @@ export class IntersectionObserverComponent implements AfterViewInit {
       this.blueCircleContextual?.nativeElement,
       config
     );
-    this.signalViewport = fromViewportObserver(this.itemsViewport._results)
+    this.signalViewport = fromViewportObserver(
+      this.itemsViewport,
+      {},
+      { items: this.arrayList, injector: this.injector }
+    );
+    this.signalViewport$ = fromViewportObserver(
+      this.itemsViewport$,
+      {},
+      { items: this.arrayList$, injector: this.injector }
+    );
     this._cd.markForCheck();
   }
+
+  filterOdds(): void {
+    this.arrayList.set(this.arrayList().filter((_) => _ % 2 === 1));
+  }
+
+  filterOdds$(): void {
+    this.arrayList$.next(this.arrayList$.getValue().filter((_) => _ % 2 === 1));
+  }
 }
-
-
