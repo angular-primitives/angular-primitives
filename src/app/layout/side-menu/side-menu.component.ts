@@ -13,6 +13,7 @@ import { RouterLink } from '@angular/router';
           <li>
             <a routerLink="intersection-observer">Intersection Observer</a>
           </li>
+          <li><a routerLink="timer">Timer</a></li>
         </ul>
       </nav>
     </aside>
