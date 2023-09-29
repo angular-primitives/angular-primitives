@@ -87,7 +87,7 @@ import { fromViewportObserver } from "@angular-primitives/intersection-observer"
     template: `
         <div #itemsViewport *ngFor="let item of arrayList; let index = index">
             <div class="item-viewport" *ngIf="signalViewport()[index]">
-              {{index}}
+              {{ item }}
             </div>
         </div>
     `
@@ -112,7 +112,7 @@ import { fromViewportObserver } from "@angular-primitives/intersection-observer"
         <div viewportObserver (viewportSignal)="signalViewportDirective = $event" class="contextual-container">
           <div *ngFor="let item of arrayList; let index = index">
             <div class="item-viewport" *ngIf="signalViewportDirective()[index]">
-              {{index}}
+              {{ item }}
             </div>
           </div>
         </div>
@@ -124,3 +124,5 @@ export class SomeComponent {
 }
 ```
 directive used [viewportObserver](https://github.com/angular-primitives/angular-primitives/tree/main/src/app/pages/intersection-observer/virtual-observer.directive.ts)
+
+Obs: If your list can change you can use third parameter passing the items(signal or observable) and a token injetor to use effect hook
