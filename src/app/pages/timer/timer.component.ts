@@ -1,5 +1,6 @@
 import {ChangeDetectionStrategy, Component, signal, WritableSignal} from '@angular/core';
-import {fromTimer} from "../../../../projects/timer/src";
+import {fromTimer, fromWaiting} from "../../../../projects/timer/src";
+import {NgIf} from "@angular/common";
 
 @Component({
   standalone: true,
@@ -18,12 +19,18 @@ import {fromTimer} from "../../../../projects/timer/src";
         <button (click)="stopTimer()">Stop time</button>
       </div>
       <br>
+      <h5>After finish the countdown the button will appears</h5>
+      {{signalCountdown()}}
+      <button *ngIf="signalWaiting()" (click)="resetCount()">Reset countdown</button>
     </article>
     `,
+  imports: [NgIf],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TimerComponent {
   signalTimer: WritableSignal<number> = signal(0);
+  signalCountdown: WritableSignal<number> = fromTimer(1000, 10,() => {}, true);
+  signalWaiting: WritableSignal<boolean> = fromWaiting(10000);
   initialTime: number = 0;
   init = false;
   stopTimer: VoidFunction = () => {};
@@ -32,6 +39,14 @@ export class TimerComponent {
 
   startTimer(event: any): void {
     this.init = true;
-    [this.signalTimer, this.stopTimer] = fromTimer(1000, event.target.value, () => console.log('aqui'))
+    this.signalTimer = fromTimer(1000, this.initialTime, (timer: any) => {
+      console.log(this.signalTimer())
+      this.signalTimer() === 10 && clearInterval(timer);
+    })
+  }
+
+  resetCount(): void {
+    this.signalCountdown = fromTimer(1000, 10,() => {}, true);
+    this.signalWaiting = fromWaiting(10000);
   }
 }
