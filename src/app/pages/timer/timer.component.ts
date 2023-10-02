@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, signal, WritableSignal} from '@angular/core';
-import {fromTimer, fromWaiting} from "../../../../projects/timer/src";
+import {fromTimer, fromAwaiting} from "../../../../projects/timer/src";
 import {NgIf} from "@angular/common";
 
 @Component({
@@ -30,7 +30,7 @@ import {NgIf} from "@angular/common";
 export class TimerComponent {
   signalTimer: WritableSignal<number> = signal(0);
   signalCountdown: WritableSignal<number> = fromTimer(1000, 10,() => {}, true);
-  signalWaiting: WritableSignal<boolean> = fromWaiting(10000);
+  signalWaiting: WritableSignal<boolean> = fromAwaiting(10000);
   initialTime: number = 0;
   init = false;
   stopTimer: VoidFunction = () => {};
@@ -47,6 +47,6 @@ export class TimerComponent {
 
   resetCount(): void {
     this.signalCountdown = fromTimer(1000, 10,() => {}, true);
-    this.signalWaiting = fromWaiting(10000);
+    this.signalWaiting = fromAwaiting(10000);
   }
 }

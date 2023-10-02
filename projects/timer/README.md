@@ -1,24 +1,63 @@
-# Timer
+<p align="center">
+  <img src="https://github.com/angular/angular/blob/main/aio/src/assets/images/logos/angular/angular.png?raw=true" width="120px" height="120px">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Plus_symbol.svg/500px-Plus_symbol.svg.png" width="100px" height="100px">
+  <img src="https://www.svgrepo.com/download/139/traffic-light.svg" width="95px" height="120px">
+</p>
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.0.0.
 
-## Code scaffolding
+# @angular-primitives/timer
 
-Run `ng generate component component-name --project timer` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project timer`.
-> Note: Don't forget to add `--project timer` or else it will be added to the default project in your `angular.json` file. 
 
-## Build
+A several time utilities for different types of use cases:
 
-Run `ng build timer` to build the project. The build artifacts will be stored in the `dist/` directory.
 
-## Publishing
 
-After building your library with `ng build timer`, go to the dist folder `cd dist/timer` and run `npm publish`.
+- [`fromTimer`](#fromTimer) - A reactive timer/countdown based on setInterval.
+- [`fromWaiting`](#fromWaiting) - A reactive waiting/debounce based on setTimout.
 
-## Running unit tests
 
-Run `ng test timer` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Installation
 
-## Further help
+```bash
+npm install @angular-primitives/timer
+# or
+pnpm add @angular-primitives/timer
+# or
+yarn add @angular-primitives/timer
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+## `fromTimer`([example](https://github.com/angular-primitives/angular-primitives/tree/main/projects/timer/src/index.ts))
+- Reactive counter until ten
+```ts
+import { fromTimer } from "@angular-primitives/timer";
+
+@Component(
+  ...
+    template: `
+        {{ signalTimer() }}
+    `
+)
+export class SomeComponent {
+  signalTimer: WritableSignal<number> = fromTimer(1000, 0, (timer: any) => {
+    console.log(this.signalTimer())
+    this.signalTimer() === 10 && clearInterval(timer);
+  })
+}
+```
+
+## `fromFormattedDiffBetweenDates`([example](https://github.com/angular-primitives/angular-primitives/tree/main/projects/timer/src/index.ts))
+- Reactive awaiting until ten
+```ts
+import { signalAwaiting } from "@angular-primitives/timer";
+
+@Component(
+  ...
+    template: `
+        {{ signalAwaiting() ? 'completed' : 'waiting...' }}
+    `
+)
+export class SomeComponent {
+  signalAwaiting: WritableSignal<boolean> = fromAwaiting(10000);
+}
+```

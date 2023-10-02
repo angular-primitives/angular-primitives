@@ -37,7 +37,7 @@ export function fromTimer(
  *
  * @returns Signal<boolean>
  */
-export function fromWaiting(
+export function fromAwaiting(
   sleepTime: number = 1000,
   fn?: Function
 ): WritableSignal<boolean> {
