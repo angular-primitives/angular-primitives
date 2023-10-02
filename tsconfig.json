@@ -18,6 +18,9 @@
       "intersection-observer": [
         "dist/intersection-observer"
       ],
+      "timer": [
+        "dist/timer"
+      ],
     },
     "declaration": false,
     "downlevelIteration": true,

@@ -27,7 +27,7 @@ yarn add @angular-primitives/date
 ```
 
 
-## `fromDiffBetweenDates`([example](https://github.com/Fractal-System/angular-primitives/tree/main/projects/date/src/index.ts))
+## `fromDiffBetweenDates`([example](https://github.com/angular-primitives/angular-primitives/tree/main/projects/date/src/index.ts))
 - Reactive diff between dates
 ```ts
 import { fromDiffBetweenDates } from "@angular-primitives/date";
@@ -47,7 +47,7 @@ export class SomeComponent {
 }
 ```
 
-## `fromFormattedDiffBetweenDates`([example](https://github.com/Fractal-System/angular-primitives/tree/main/projects/date/src/index.ts))
+## `fromFormattedDiffBetweenDates`([example](https://github.com/angular-primitives/angular-primitives/tree/main/projects/date/src/index.ts))
 - Formatted reactive diff between dates
 ```ts
 import { fromFormattedDiffBetweenDates } from "@angular-primitives/date";
