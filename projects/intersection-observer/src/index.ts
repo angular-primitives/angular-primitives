@@ -1,4 +1,14 @@
-import {effect, EffectRef, ElementRef, Injector, isSignal, signal, Signal, WritableSignal} from '@angular/core';
+import {
+  DestroyRef,
+  effect,
+  EffectRef,
+  ElementRef,
+  Injector,
+  isSignal,
+  signal,
+  Signal,
+  WritableSignal
+} from '@angular/core';
 import {Observable} from "rxjs";
 import {toSignal} from "@angular/core/rxjs-interop";
 
@@ -13,7 +23,8 @@ import {toSignal} from "@angular/core/rxjs-interop";
  */
 export const fromVisibilityObserver = (
   element: HTMLElement,
-  config:IntersectionObserverInit = {}
+  config:IntersectionObserverInit = {},
+  destroyRef?: DestroyRef
 ): Signal<boolean> => {
   const signals: WeakMap<Element, Signal<boolean>> = new WeakMap<Element, Signal<boolean>>();
   const initialSignal = signal(false);
@@ -32,6 +43,8 @@ export const fromVisibilityObserver = (
 
   intersectionObserver.observe(element);
 
+  destroyRef && handleDestroyRef(destroyRef, intersectionObserver);
+
   return signals.get(element) || initialSignal;
 };
 
@@ -48,7 +61,7 @@ export const fromVisibilityObserver = (
 export const fromViewportObserver = (
   ref: { _results: ElementRef[] } & { children: HTMLElement[] },
   config: IntersectionObserverInit = {},
-  context?: { items: Signal<any> | Observable<any>, injector: Injector }
+  context?: { items: Signal<any> | Observable<any>, injector: Injector, destroyRef?: DestroyRef }
 ): WritableSignal<{[n: number]: boolean}> => {
   const viewportSignal: WritableSignal<{[n: number]: boolean}> = signal({});
   const indexElement: WeakMap<Element, number> = new WeakMap<Element, number>();
@@ -65,8 +78,9 @@ export const fromViewportObserver = (
 
   const observeElements = () => {
     for (let i = 0; i < getElementsFromRef(ref)?.length; i ++) {
-      indexElement.set(getElementsFromRef(ref)[i]?.nativeElement || getElementsFromRef(ref)[i], i)
-      intersectionObserver.observe(getElementsFromRef(ref)[i]?.nativeElement || getElementsFromRef(ref)[i]);
+      const element = getElementsFromRef(ref)[i]?.nativeElement || getElementsFromRef(ref)[i];
+      indexElement.set(element, i)
+      intersectionObserver.observe(element);
     }
   }
 
@@ -80,6 +94,8 @@ export const fromViewportObserver = (
     observeElements();
   }
 
+  context?.destroyRef && handleDestroyRef(context.destroyRef, intersectionObserver);
+
   return viewportSignal;
 };
 
@@ -89,4 +105,11 @@ function getElementsFromRef(ref: any): ElementRef[] & HTMLElement[] {
 
 function isIntersecting(entry: IntersectionObserverEntry): boolean {
   return entry.isIntersecting || entry.intersectionRatio > 0;
+}
+
+function handleDestroyRef(destroyRef: DestroyRef, intersectionObserver: IntersectionObserver): void {
+  const destroy = destroyRef.onDestroy(() => {
+    intersectionObserver.disconnect();
+    destroy()
+  });
 }

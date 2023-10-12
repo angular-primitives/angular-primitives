@@ -2,7 +2,7 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component,
+  Component, DestroyRef,
   ElementRef,
   inject,
   InjectionToken,
@@ -215,6 +215,7 @@ export class IntersectionObserverComponent implements AfterViewInit {
 
   private _cd: ChangeDetectorRef = inject(ChangeDetectorRef);
   private injector = inject(Injector);
+  private destroyRef = inject(DestroyRef)
 
   isRedCicleVisible!: Signal<boolean>;
   isBlueCircleVisible!: Signal<boolean>;
@@ -236,10 +237,14 @@ export class IntersectionObserverComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.isRedCicleVisible = fromVisibilityObserver(
-      this.redCicle?.nativeElement
+      this.redCicle?.nativeElement,
+      {},
+      this.destroyRef
     );
     this.isBlueCircleVisible = fromVisibilityObserver(
-      this.blueCircle?.nativeElement
+      this.blueCircle?.nativeElement,
+      {},
+      this.destroyRef
     );
     const config = {
       root: this.contextualContainer.nativeElement,
@@ -248,21 +253,23 @@ export class IntersectionObserverComponent implements AfterViewInit {
     };
     this.isRedCicleContextualVisible = fromVisibilityObserver(
       this.redCicleContextual?.nativeElement,
-      config
+      config,
+      this.destroyRef
     );
     this.isBlueCircleContextualVisible = fromVisibilityObserver(
       this.blueCircleContextual?.nativeElement,
-      config
+      config,
+      this.destroyRef
     );
     this.signalViewport = fromViewportObserver(
       this.itemsViewport,
       {},
-      { items: this.arrayList, injector: this.injector }
+      { items: this.arrayList, injector: this.injector, destroyRef: this.destroyRef  }
     );
     this.signalViewport$ = fromViewportObserver(
       this.itemsViewport$,
       {},
-      { items: this.arrayList$, injector: this.injector }
+      { items: this.arrayList$, injector: this.injector, destroyRef: this.destroyRef }
     );
     this._cd.markForCheck();
   }
