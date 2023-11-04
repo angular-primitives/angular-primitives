@@ -4,10 +4,11 @@ import {computed, signal, Signal, WritableSignal} from "@angular/core";
 /**
  * Reactive timer.
  *
- * @param timeCycle The timer to create:  {@link setInterval}.
- * @param initialValue: delay Number or {@link Accessor} containing a number representing
- * the time between executions of {@link fn} in ms, or false to disable the timer.
- * @param fn Function to be called every {@link delay} use it to clearInterval.
+ * @param timeCycle The timer to create:  {@link timeCycle}.
+ * @param initialValue: delay Number or {@link initialValue} containing a number representing
+ * the time between executions of {@link timeCycle} in ms, or false to disable the timer.
+ * @param fn Function to be called every {@link fn} use it to clearInterval.
+ * @param boolean {@link isCountdown} to use a countdown timer
  *
  * @returns Signal<number>
  */
@@ -32,7 +33,7 @@ export function fromTimer(
 /**
  * Reactive timer.
  *
- * @param sleepTime The setTimeout to create:  {@link setTimeout}.
+ * @param sleepTime The setTimeout to create:  {@link fn}.
  * @param fn Function to be called in the end of {@link sleepTime} use it to setTimeout.
  *
  * @returns Signal<boolean>
