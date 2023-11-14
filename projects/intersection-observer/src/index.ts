@@ -96,7 +96,6 @@ export const fromViewportObserver = (
 
   context?.destroyRef && handleDestroyRef(context.destroyRef, intersectionObserver);
 
-  console.log(viewportSignal())
   return viewportSignal;
 };
 
