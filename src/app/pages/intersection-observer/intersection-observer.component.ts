@@ -271,7 +271,7 @@ export class IntersectionObserverComponent implements AfterViewInit {
       {},
       { items: this.arrayList$, injector: this.injector, destroyRef: this.destroyRef }
     );
-    this._cd.markForCheck();
+    this._cd.detectChanges();
   }
 
   filterOdds(): void {

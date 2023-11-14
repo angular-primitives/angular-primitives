@@ -71,7 +71,7 @@ export const fromViewportObserver = (
       const index = indexElement.get(entry.target) || 0;
       viewportSignal.update( (value) => {
         value[index] = !index ? true: isIntersecting(entry);
-        return value;
+        return structuredClone(value);
       })
     });
   }, config);
