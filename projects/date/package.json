@@ -2,8 +2,8 @@
   "name": "@angular-primitives/date",
   "version": "0.0.2",
   "peerDependencies": {
-    "@angular/common": "^16.0.0",
-    "@angular/core": "^16.0.0"
+    "@angular/common": "^17.0.2",
+    "@angular/core": "^17.0.2"
   },
   "dependencies": {
     "tslib": "^2.3.0"

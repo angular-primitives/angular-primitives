@@ -71,7 +71,7 @@ export const fromViewportObserver = (
       const index = indexElement.get(entry.target) || 0;
       viewportSignal.update( (value) => {
         value[index] = !index ? true: isIntersecting(entry);
-        return value;
+        return structuredClone(value);
       })
     });
   }, config);
@@ -96,6 +96,7 @@ export const fromViewportObserver = (
 
   context?.destroyRef && handleDestroyRef(context.destroyRef, intersectionObserver);
 
+  console.log(viewportSignal())
   return viewportSignal;
 };
 
